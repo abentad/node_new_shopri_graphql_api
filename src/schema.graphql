@@ -1,0 +1,168 @@
+type Query {
+  user(id: ID!): User!
+  userByPhone(phoneNumber: String): AuthPayload!
+  users: [User!]!
+  product(id: ID!): Product!
+  products(page: Int!, limit: Int!): PaginatedProduct!
+  conversations(userId: ID!): [Conversation!]!
+  messages(conversationId: ID!): [Message!]!
+}
+
+# for file upload purpose
+scalar Upload
+type File {
+  filename: String!
+  filelocation: String!
+  mimetype: String!
+  encoding: String!
+}
+# 
+
+type Mutation{
+  createUser(data: CreateUserInput!, file: Upload!): AuthPayload!
+  loginUser(data: LoginUserInput!): AuthPayload!
+  loginUserByToken: User!
+  updateUser(data: UpdateUserInput, file: Upload): User!
+  deleteUser: User!
+  deleteUserById(id: ID!): User!
+  createProduct(data: CreateProductInput!, files: [Upload!]!): Product!
+  updateProduct(data: UpdateProductInput!): Product!
+  updateProductView(id: ID!): Product!
+  deleteProduct(id: ID!): Product!
+  addMessage(data: AddMessageInput!): Message!
+  addConversation(data: AddConversationInput!): Conversation!
+}
+
+input AddMessageInput{
+  conversationId: ID!
+  senderId: ID!
+  receiverId: ID!
+  messageText: String!
+  timeSent: String!
+}
+
+input AddConversationInput{
+  senderId: ID!
+  receiverId: ID!
+  lastMessage: String!
+  lastMessageTimeSent: String!
+  lastMessageSenderId: ID!
+}
+
+input CreateUserInput{
+  deviceToken: String!
+  username: String!
+  email: String!
+  phoneNumber: String!
+  dateJoined: String!
+}
+
+type AuthPayload{
+  token: String!
+  user: User!
+}
+
+type User{
+  id: ID!
+  deviceToken: String!
+  username: String!
+  email: String!
+  phoneNumber: String!
+  password: String!
+  profile_image: String!
+  dateJoined: String!
+  products: [Product!]!
+}
+
+type Product{
+  id: ID!
+  isPending: String!
+  views: Int!
+  name: String!
+  price: String!
+  description: String!
+  category: String!
+  image: String!
+  datePosted: String!
+  posterId: String!
+  poster: User!
+  images: [Image!]!
+  height: Int!
+  width: Int!
+  blurHash: String!
+}
+
+type Image{
+  image_id: ID!
+  id: ID!
+  url: String!
+}
+
+type Conversation{
+  id: ID!
+  senderId: ID!
+  receiverId: ID!
+  lastMessage: String!
+  lastMessageTimeSent: String!
+  lastMessageSenderId: ID!
+  lastMessageSender: User!
+}
+
+type Message{
+  id: ID!
+  conversationId: ID!
+  senderId: ID!
+  receiverId: ID!
+  messageText: String!
+  timeSent: String!
+  sender: User!
+  receiver: User!
+}
+
+type PaginatedProduct{
+  count: Int!
+  pages: Int!
+  products: [Product!]!
+}
+
+
+
+input UpdateUserInput{
+  deviceToken: String
+  username: String
+  email: String
+  phoneNumber: String
+  password: String
+  dateJoined: String
+}
+
+input LoginUserInput{
+  email: String!
+  password: String!
+}
+
+input CreateProductInput{
+  isPending: String!
+  views: Int!
+  name: String!
+  price: String!
+  description: String!
+  category: String!
+  datePosted: String!
+  height: Int!
+  width: Int!
+  blurHash: String!
+}
+
+input UpdateProductInput{
+  id: ID!
+  isPending: String
+  views: Int
+  name: String
+  price: String
+  description: String
+  category: String
+  image: String
+  datePosted: String
+}
+
