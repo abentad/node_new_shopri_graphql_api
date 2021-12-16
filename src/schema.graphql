@@ -106,6 +106,8 @@ type Conversation{
   lastMessageTimeSent: String!
   lastMessageSenderId: ID!
   lastMessageSender: User!
+  sender: User!
+  receiver: User!
 }
 
 type Message{
