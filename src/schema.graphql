@@ -6,6 +6,7 @@ type Query {
   products(page: Int!, limit: Int!): PaginatedProduct!
   conversations(userId: ID!): [Conversation!]!
   messages(conversationId: ID!): [Message!]!
+  wishlists(userId: ID!): [WishList!]!
 }
 
 # for file upload purpose
@@ -17,6 +18,13 @@ type File {
   encoding: String!
 }
 # 
+type WishList{
+  id: ID!
+  productId: ID!
+  userId: ID!
+  product: Product!
+  user: User!
+}
 
 type Mutation{
   createUser(data: CreateUserInput!, file: Upload!): AuthPayload!
@@ -31,6 +39,14 @@ type Mutation{
   deleteProduct(id: ID!): Product!
   addMessage(data: AddMessageInput!): Message!
   addConversation(data: AddConversationInput!): Conversation!
+  addWishList(data: AddWishListInput!): WishList!
+  deleteWishList(id: ID!): WishList!
+  findProductsByName(name: String!): [Product!]!
+}
+
+input AddWishListInput{
+  productId: ID!
+  userId: ID!
 }
 
 input AddMessageInput{
@@ -126,8 +142,6 @@ type PaginatedProduct{
   pages: Int!
   products: [Product!]!
 }
-
-
 
 input UpdateUserInput{
   deviceToken: String

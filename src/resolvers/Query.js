@@ -33,14 +33,18 @@ const Query = {
         let convs = [];
         const conversationsBySender = await db.conversations.findAll({ where: { senderId: userId } });
         const conversationsByReceiver = await db.conversations.findAll({ where: { receiverId: userId } });
-
         convs.push(...conversationsBySender, ...conversationsByReceiver);
         return convs;
     },
     async messages(parent, { conversationId }, { db }, info){
         const messages = await db.messages.findAll({ where: { conversationId }});
         return messages;
+    },
+    async wishlists(parent, { userId }, { db }, info){
+        const wishlists = await db.wishlist.findAll({ where: { userId }});
+        return wishlists;
     }
+
 }
 
 module.exports = Query;

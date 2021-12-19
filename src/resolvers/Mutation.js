@@ -73,7 +73,7 @@ const Mutation = {
         return user;
     },
     async updateProductView(parent, { id }, { db, req }, info){
-        const userId = getUserId(req);
+        // const userId = getUserId(req);
         const [originalProduct] = await db.products.findAll({ where: { id } });
         if(!originalProduct) throw new Error('Product not found');
         const newView = originalProduct.views + 1;
@@ -110,6 +110,20 @@ const Mutation = {
         const [updatedProduct] = await db.products.findAll({ where: { id: data.id }});
         return updatedProduct;
     },
+    async addWishList(parent, { data }, { db }, info){
+        const wishlists = await db.wishlist.findAll({ where: { userId: data.userId } });
+        for(let i = 0; i < wishlists.length; i++){
+            if(wishlists[i].productId == data.productId) throw new Error('Wishlist already added');
+        }
+        const wishlist = await db.wishlist.create({ ...data });
+        return wishlist;
+    },  
+    async deleteWishList(parent, { id }, { db, req}, info){
+        const [wishlist] = await db.wishlist.findAll({ where: { id } });
+        if(!wishlist) throw new Error('Wishlist not found');
+        await db.wishlist.destroy({ where: { id }});
+        return wishlist;
+    },
     async addMessage(parent, { data }, { db }, info){
         const message = await db.messages.create({ ...data });
         const convUpdateData = {
@@ -124,6 +138,11 @@ const Mutation = {
         const conversation = await db.conversations.create({ ...data });
         return conversation;
     },
+    async findProductsByName(parent, { name }, { db }, info){
+        const products = await db.products.findAll({ where: { name } });
+        if(!products) throw new Error('Nothing found');
+        return products;
+    }
 };
 
 module.exports = Mutation;
